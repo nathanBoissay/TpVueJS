@@ -3,11 +3,15 @@
         <div class="card-header">
             <input v-if="editing" type="text" v-model="editText" @blur="doneEdit" @keyup.enter="doneEdit">
             <span v-else @dblclick="edit">{{ editText }}</span>
-            <!-- <button class="btn btn-primary" @click="edit">Editer</button> -->
+
         </div>
         <div class="card-body">
             <ul>
-                <li v-for="choice in choices" :key="choice">{{ choice }}</li>
+                <li v-for="(choice, index) in choices" :key="choice">
+                    <input v-if="editingChoiceIndex === index" type="text" v-model="editChoiceText" @blur="doneEditChoice(index)" @keyup.enter="doneEditChoice(index)">
+                    <span v-else>{{ choice }}</span>
+                    <button class="btn btn-primary" @click="editChoice(index)">Edit</button>
+                </li>
             </ul>
         </div>
         <button class="btn btn-danger" @click="remove">Supprimer</button>
@@ -23,7 +27,9 @@ export default {
         return {
             reponses: [],
             editing: false,
-            editText: this.question.title
+            editText: this.question.title,
+            editingChoiceIndex: -1,
+            editChoiceText: ''
         };
     },
     computed: {
@@ -53,7 +59,7 @@ export default {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ title })
+                body: JSON.stringify({ title, choices: this.choices})
             })
                 .then(response => {
                     if (response.ok) {
@@ -63,7 +69,16 @@ export default {
                     }
                 })
                 .catch(error => console.error('Erreur lors de la modification de la question ', error))
-        }
+        },
+        editChoice(index) {
+            this.editingChoiceIndex = index;
+            this.editChoiceText = this.choices[index];
+        },
+        doneEditChoice(index) {
+            this.choices.splice(index, 1, this.editChoiceText);
+            this.editQuestion(this.question.id, this.editText);
+            this.editingChoiceIndex = -1;
+        },
     },
     emits: ['remove']
 };

@@ -38,7 +38,7 @@ def create_question():
     return jsonify(question.to_json()), 201
 
 @app.route("/questions/<int:question_id>", methods=["PUT"])
-def update_question_name(question_id):
+def update_question(question_id):
     question = db.session.query(Question).get(question_id)
     if question is None:
         abort(404)
@@ -46,6 +46,19 @@ def update_question_name(question_id):
         abort(400)
     if "title" in request.json and type(request.json["title"]) != str:
         abort(400)
+    if "choices" in request.json and type(request.json["choices"]) is list:
+        choices = request.json["choices"]
+        for i, choice in enumerate(choices):
+            if i == 0:
+                question.first_choix = choice
+            elif i == 1:
+                question.second_choix = choice
+            elif i == 2:
+                question.third_choix = choice
+            elif i == 3:
+                question.fourth_choix = choice
+            else:
+                break
     question.title = request.json.get("title", question.title)
     db.session.commit()
     return jsonify(question.to_json())
