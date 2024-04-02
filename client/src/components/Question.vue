@@ -83,3 +83,18 @@ export default {
     emits: ['remove']
 };
 </script>
+
+<style scoped>
+
+.card{
+    margin: 30px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn{
+    margin: 5px;
+}
+
+</style>

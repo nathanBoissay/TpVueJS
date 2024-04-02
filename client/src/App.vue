@@ -91,8 +91,10 @@ export default {
     <input type="button" value="Ajouter" class="btn btn-success" @click="createQuestionnaire">
   </div>
   <ul>
-    <li v-for="questionnaire in questionnaires" :key="questionnaire.id">
-      <Questionnaire :questionnaire="questionnaire" @remove="removeQuestionnaire"/>
+    <li class="nomQuestionnaire" v-for="questionnaire in questionnaires" :key="questionnaire.id">
+      <div class="card">
+        <Questionnaire :questionnaire="questionnaire" @remove="removeQuestionnaire"/>
+      </div>
     </li>
   </ul>
 </div>
@@ -109,5 +111,10 @@ export default {
   .addQestionnaire input[type="button"] {
     margin-left: 10px;
   }
-
+  .card {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
 </style>

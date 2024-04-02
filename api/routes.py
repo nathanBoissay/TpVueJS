@@ -72,8 +72,6 @@ def delete_question(question_id):
     db.session.commit()
     return jsonify({"result": True})
 
-
-# delete questions by questionnaire_id
 @app.route("/questions/questionnaire/<int:questionnaire_id>", methods=["DELETE"])
 def delete_questions(questionnaire_id):
     questions = db.session.query(Question).filter(Question.questionnaire_id == questionnaire_id).all()

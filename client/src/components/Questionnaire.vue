@@ -1,27 +1,39 @@
 <template>
+    <div class="container">
+        <input v-if="editing" type="text" v-model="editText" @blur="doneEdit" @keyup.enter="doneEdit">
+        <h2 v-else @dblclick="edit">{{ editText }}</h2>
+        <input type="button" class="btn btn-danger" value="SUPPRIMER" @click="removeQuestionnaire">
+        <form @submit.prevent="addQuestion">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Intitulé de la question" required v-model="newQuestion.title">
+            </div>
+            <div class="form-group">
+                <select class="form-control" required v-model="newQuestion.type">
+                    <option value="question_simple">Question Simple</option>
+                    <option value="question_multiple">Question Multiple</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Choix 1" required v-model="newQuestion.first_choix">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Choix 2" required v-model="newQuestion.second_choix">
+            </div>
+            <div class="form-group" v-if="newQuestion.type === 'question_multiple'">
+                <input type="text" class="form-control" placeholder="Choix 3 (si multiple)" v-model="newQuestion.third_choix">
+            </div>
+            <div class="form-group" v-if="newQuestion.type === 'question_multiple'">
+                <input type="text" class="form-control" placeholder="Choix 4 (si multiple)" v-model="newQuestion.fourth_choix">
+            </div>
+            <input type="submit" class="btn btn-success" value="Ajouter question">
+        </form>
 
-    <input v-if="editing" type="text" v-model="editText" @blur="doneEdit" @keyup.enter="doneEdit">
-    <span v-else @dblclick="edit">{{ editText }}</span>
-    <input type="button" class="btn btn-danger" value="SUPPRIMER" @click="removeQuestionnaire">
-    <form @submit.prevent="addQuestion">
-        <input type="text" class="title" placeholder="Intitulé de la question" required v-model="newQuestion.title">
-        <select class="type" required v-model="newQuestion.type">
-            <option value="question_simple">Question Simple</option>
-            <option value="question_multiple">Question Multiple</option>
-        </select>
-        <input type="text" class="choix1" placeholder="Choix 1" required v-model="newQuestion.first_choix">
-        <input type="text" class="choix2" placeholder="Choix 2" required v-model="newQuestion.second_choix">
-        <input type="text" class="choix3" placeholder="Choix 3 (si multiple)" v-model="newQuestion.third_choix">
-        <input type="text" class="choix4" placeholder="Choix 4 (si multiple)" v-model="newQuestion.fourth_choix">
-        <input type="submit" class="btn btn-success" value="Ajouter question">
-    </form>
-
-    <ul>
-        <li v-for="question in questions" :key="question.id">
-            <Question :question="question" @remove="removeQuestion"/>
-        </li>
-    </ul>
-
+        <ul>
+            <li v-for="question in questions" :key="question.id">
+                <Question :question="question" @remove="removeQuestion"/>
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>
@@ -77,33 +89,33 @@ export default {
                     }
                 })
                 .catch(error => console.error('Erreur lors de la modification du questionnaire ', error))
-            
+
         },
-        getQuestions(){
+        getQuestions() {
             fetch(`http://127.0.0.1:5000/questionnaires/${this.questionnaire.id}/questions`,)
-            .then(response => response.json())
-            .then(data => {
-                this.questions = data.questions
-            })
-            .catch(error => console.error('Erreur lors de la récupération des questions ', error))
+                .then(response => response.json())
+                .then(data => {
+                    this.questions = data.questions
+                })
+                .catch(error => console.error('Erreur lors de la récupération des questions ', error))
         },
-        removeQuestion(id){
+        removeQuestion(id) {
             fetch(`http://127.0.0.1:5000//questions/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => {
-                if (response.ok) {
-                    this.getQuestions()
-                } else {
-                    console.error('Erreur lors de la suppression de la question')
-                }
-            })
-            .catch(error => console.error('Erreur lors de la suppression de la question ', error))
+                .then(response => {
+                    if (response.ok) {
+                        this.getQuestions()
+                    } else {
+                        console.error('Erreur lors de la suppression de la question')
+                    }
+                })
+                .catch(error => console.error('Erreur lors de la suppression de la question ', error))
         },
-        addQuestion(){
+        addQuestion() {
             fetch(`http://127.0.0.1:5000/questions`, {
                 method: 'POST',
                 headers: {
@@ -121,22 +133,22 @@ export default {
                     }
                 )
             })
-            .then(response => {
-                if (response.ok) {
-                    this.getQuestions()
-                    this.newQuestion = {
-                        title: '',
-                        type: 'question_simple',
-                        first_choix: '',
-                        second_choix: '',
-                        third_choix: '',
-                        fourth_choix: ''
+                .then(response => {
+                    if (response.ok) {
+                        this.getQuestions()
+                        this.newQuestion = {
+                            title: '',
+                            type: 'question_simple',
+                            first_choix: '',
+                            second_choix: '',
+                            third_choix: '',
+                            fourth_choix: ''
+                        }
+                    } else {
+                        console.error('Erreur lors de l\'ajout de la question')
                     }
-                } else {
-                    console.error('Erreur lors de l\'ajout de la question')
-                }
-            })
-            .catch(error => console.error('Erreur lors de l\'ajout de la question ', error))
+                })
+                .catch(error => console.error('Erreur lors de l\'ajout de la question ', error))
         }
     },
     mounted() {
@@ -145,15 +157,12 @@ export default {
 }
 </script>
 
-
-
 <style scoped>
 .container {
     margin-top: 20px;
 }
 
-.btn-danger {
-    margin: 10px;
+.btn {
+    margin: 20px;
 }
-
 </style>
