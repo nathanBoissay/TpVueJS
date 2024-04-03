@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: Votre API de Questionnaires
+  version: 1.0.0
+  description: API permettant de gérer des questionnaires et des questions associées
+servers:
+  - url: http://localhost:5000
+paths:
+  /questionnaires:
+    get:
+      summary: Récupérer tous les questionnaires
+      responses:
+        '200':
+          description: Succès
+    post:
+      summary: Créer un nouveau questionnaire
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nom du questionnaire
+      responses:
+        '201':
+          description: Créé avec succès
+  /questionnaires/{questionnaire_id}:
+    parameters:
+      - in: path
+        name: questionnaire_id
+        required: true
+        description: ID du questionnaire
+        schema:
+          type: integer
+    get:
+      summary: Récupérer un questionnaire par ID
+      responses:
+        '200':
+          description: Succès
+        '404':
+          description: Non trouvé
+    put:
+      summary: Mettre à jour un questionnaire
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nouveau nom du questionnaire
+      responses:
+        '200':
+          description: Succès
+        '404':
+          description: Non trouvé
+    delete:
+      summary: Supprimer un questionnaire
+      responses:
+        '200':
+          description: Supprimé avec succès
+        '404':
+          description: Non trouvé
+  /questionnaires/{questionnaire_id}/questions:
+    parameters:
+      - in: path
+        name: questionnaire_id
+        required: true
+        description: ID du questionnaire
+        schema:
+          type: integer
+    get:
+      summary: Récupérer les questions d'un questionnaire
+      responses:
+        '200':
+          description: Succès
+        '404':
+          description: Non trouvé
+  /questions:
+    get:
+      summary: Récupérer toutes les questions
+      responses:
+        '200':
+          description: Succès
+    post:
+      summary: Créer une nouvelle question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Titre de la question
+                type:
+                  type: string
+                  description: Type de question (question_simple ou question_multiple)
+                questionnaire_id:
+                  type: integer
+                  description: ID du questionnaire auquel la question est associée
+                first_choix:
+                  type: string
+                  description: Premier choix (pour les questions multiples)
+                second_choix:
+                  type: string
+                  description: Deuxième choix (pour les questions multiples)
+                third_choix:
+                  type: string
+                  description: Troisième choix (pour les questions multiples)
+                fourth_choix:
+                  type: string
+                  description: Quatrième choix (pour les questions multiples)
+      responses:
+        '201':
+          description: Créé avec succès
+  /questions/{question_id}:
+    parameters:
+      - in: path
+        name: question_id
+        required: true
+        description: ID de la question
+        schema:
+          type: integer
+    get:
+      summary: Récupérer une question par ID
+      responses:
+        '200':
+          description: Succès
+        '404':
+          description: Non trouvé
+    put:
+      summary: Mettre à jour une question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Nouveau titre de la question
+                choices:
+                  type: array
+                  items:
+                    type: string
+                  description: Nouveaux choix (pour les questions multiples)
+      responses:
+        '200':
+          description: Succès
+        '404':
+          description: Non trouvé
+    delete:
+      summary: Supprimer une question
+      responses:
+        '200':
+          description: Supprimé avec succès
+        '404':
+          description: Non trouvé

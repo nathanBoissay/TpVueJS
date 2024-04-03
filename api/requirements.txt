@@ -1,4 +1,5 @@
 blinker==1.7.0
+flasgger==0.9.7.1
 click==8.1.7
 Flask==3.0.1
 Flask-Cors==4.0.0
